@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.example</groupId>
+        <artifactId>client-interoperability</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>legacy2current</artifactId>
+
+    <description>
+        This test case tests EJB client to Wildfly server interactions, with the following conditions:
+        * EJB client with legacy interoperability versions (wildfly-http-client 1.1.2 from EJB client 26.1.3.Final BOM)
+        * Wildfly server with non-legacy interoperability version (wildfly-http-client 2.0.2 from Wildfly server 28.0.0)
+    </description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- we need to import the BOM for the legacy version, to get the correct dependencies on the client side -->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-ejb-client-bom</artifactId>
+                <version>26.1.3.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- we need to list the direct dependencies for the EJB client - jboss.all? -->
+    <dependencies>
+        <!-- test deployment -->
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>sampleApp</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- client side libraries -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- http transport for client side libraries -->
+        <dependency>
+            <groupId>org.wildfly.wildfly-http-client</groupId>
+            <artifactId>wildfly-http-ejb-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.wildfly-http-client</groupId>
+            <artifactId>wildfly-http-naming-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.transaction</groupId>
+            <artifactId>wildfly-transaction-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <!-- run the integration tests -->
+                    <execution>
+                        <id>ee-interop-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <org.wildfly.ee.namespace.interop>false</org.wildfly.ee.namespace.interop>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>4.1.0.Final</version>
+                <configuration>
+                    <!-- server -->
+                    <skip>false</skip>
+                    <version>28.0.0.Final</version>
+                    <propertiesFile>${project.basedir}/target/test-classes/system.properties</propertiesFile>
+                    <!-- deployment -->
+                    <targetDir>${project.basedir}/../sampleApp/target</targetDir>
+                    <filename>sampleApp-1.0-SNAPSHOT.jar</filename>
+                    <add-user>
+                        <users>
+                            <user>
+                                <username>ejb-over-http-user</username>
+                                <password>ejb-over-http-password</password>
+                                <realm>ApplicationRealm</realm>
+                                <application-user>true</application-user>
+                            </user>
+                        </users>
+                    </add-user>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-current-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-current-server</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>undeploy</goal>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  How to configure an EJB client talking to a server?
+  What is the minimum that needs to be considered?
+  - static discovery of targets? probably not
+  - http client configuration? probably
+  - security configuration? certainly
+    - how to think about configuring security?
+      - user credentials that exist on the server (realms, domains)
+      - security protocol used between client and server (SASL)
+  -->
+<configuration >
+    <http-client xmlns="urn:wildfly-http-client:1.0">
+        <defaults>
+            <eagerly-acquire-session value="true"/>
+            <enable-http2 value="true" />
+        </defaults>
+    </http-client>
+    <!-- use this to match deployments with the targets (servers, load balancers) they can be located at -->
+    <discovery xmlns="urn:wildfly-discovery:1.0">
+        <discovery-provider>
+            <static>
+                <service uri="http://localhost:7788/wildfly-services" abstract-type="ejb" abstract-type-authority="jboss" >
+                    <attribute name="ejb-module" value="wildfly-app/wildfly-ejb-remote-server-side" />
+                </service>
+            </static>
+        </discovery-provider>
+    </discovery>
+    <!-- use this to configure security (authentication, encryption) -->
+    <authentication-client xmlns="urn:elytron:1.0">
+        <authentication-rules>
+            <rule use-configuration="ejb-over-http">
+                <match-protocol name="http" />
+            </rule>
+        </authentication-rules>
+        <authentication-configurations>
+            <configuration name="ejb-over-http">
+                <set-user-name name="ejb-over-http-user" />
+                <credentials>
+                    <clear-password password="ejb-over-http-password" />
+                </credentials>
+                <set-mechanism-realm name="ApplicationRealm" />
+            </configuration>
+        </authentication-configurations>
+        <key-stores>
+            <key-store name="client-keys" type="JKS">
+                <resource name="client.keystore"/>
+            </key-store>
+            <key-store name="client-trust" type="JKS">
+                <resource name="client.truststore" />
+            </key-store>
+        </key-stores>
+        <ssl-contexts>
+            <ssl-context name="client-ssl">
+                <trust-store key-store-name="client-trust"/>
+                <key-store-ssl-certificate key-store-name="client-keys" alias="client">
+                    <key-store-clear-password password="password"/>
+                </key-store-ssl-certificate>
+            </ssl-context>
+        </ssl-contexts>
+        <ssl-context-rules>
+            <rule use-ssl-context="client-ssl">
+                <match-protocol name="https" />
+            </rule>
+        </ssl-context-rules>
+    </authentication-client>
+</configuration>
