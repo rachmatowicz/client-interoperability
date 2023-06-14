@@ -106,7 +106,7 @@
                         </goals>
                         <configuration>
                             <systemProperties>
-                                <org.wildfly.ee.namespace.interop>false</org.wildfly.ee.namespace.interop>
+                                <org.wildfly.ee.namespace.interop>true</org.wildfly.ee.namespace.interop>
                             </systemProperties>
                         </configuration>
                     </execution>
