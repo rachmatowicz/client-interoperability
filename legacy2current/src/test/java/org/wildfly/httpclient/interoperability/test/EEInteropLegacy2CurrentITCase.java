@@ -16,7 +16,7 @@ import java.net.URI;
  */
 public class EEInteropLegacy2CurrentITCase {
     private static final String APP = "";
-    private static final String MODULE = "sampleApp-1.0-SNAPSHOT";
+    private static final String MODULE = "sampleApp-ee10-1.0-SNAPSHOT";
     private static final String BEAN = "StatelessIncrementorBean";
 
     private final String JBOSS_NODE_NAME = "current-server";

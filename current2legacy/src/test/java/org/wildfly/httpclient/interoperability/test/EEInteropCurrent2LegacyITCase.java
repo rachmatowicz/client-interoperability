@@ -16,10 +16,10 @@ import java.net.URI;
  */
 public class EEInteropCurrent2LegacyITCase {
     private static final String APP = "";
-    private static final String MODULE = "sampleApp-1.0-SNAPSHOT";
+    private static final String MODULE = "sampleApp-ee8-1.0-SNAPSHOT";
     private static final String BEAN = "StatelessIncrementorBean";
 
-    private final String JBOSS_NODE_NAME = "current-server";
+    private final String JBOSS_NODE_NAME = "legacy-server";
 
     @Test
     public void testCurrent2LegacyInteroperation() throws Exception {

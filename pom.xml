@@ -11,7 +11,8 @@
     <modules>
         <module>legacy2current</module>
         <module>current2legacy</module>
-        <module>sampleApp</module>
+        <module>sampleApp-ee8</module>
+        <module>sampleApp-ee10</module>
     </modules>
 
     <properties>

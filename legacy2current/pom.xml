@@ -41,7 +41,7 @@
         <!-- test deployment -->
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>sampleApp</artifactId>
+            <artifactId>sampleApp-ee10</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -116,11 +116,13 @@
                     <!-- server -->
                     <skip>false</skip>
                     <version>28.0.0.Final</version>
+                    <!-- for server side debugging, replace <version/> with <jbossHome/> -->
+                    <!--jbossHome>/home/nrla/jboss/wildfly-28.0.0.Final</jbossHome-->
                     <propertiesFile>${project.basedir}/target/test-classes/system.properties</propertiesFile>
                     <provisioningDir>${project.basedir}/target/current-server</provisioningDir>
                     <!-- deployment -->
-                    <targetDir>${project.basedir}/../sampleApp/target</targetDir>
-                    <filename>sampleApp-1.0-SNAPSHOT.jar</filename>
+                    <targetDir>../sampleApp-ee10/target</targetDir>
+                    <filename>sampleApp-ee10-1.0-SNAPSHOT.jar</filename>
                     <add-user>
                         <users>
                             <user>
