@@ -90,6 +90,10 @@
                             <name>java.util.logging.manager</name>
                             <value>org.jboss.logmanager.LogManager</value>
                         </property>
+                        <property>
+                            <name>logging.configuration</name>
+                            <value>file://${project.basedir}/target/test-classes/logging.properties</value>
+                        </property>
                     </systemProperties>
                 </configuration>
                 <executions>
