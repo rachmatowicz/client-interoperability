@@ -66,15 +66,44 @@
             <artifactId>wildfly-transaction-client</artifactId>
         </dependency>
 
+        <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman-bmunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman-install</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <!-- enable debugging (for Byteman) on client side tests-->
+                    <compilerArgs>
+                        <arg>-g</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -95,6 +124,11 @@
                             <value>file://${project.basedir}/target/test-classes/logging.properties</value>
                         </property>
                     </systemProperties>
+                    <!-- byteman setup for client side tests -->
+                    <argLine>-Dorg.jboss.byteman.verbose, -Djdk.attach.allowAttachSelf=true</argLine>
+                    <environmentVariables>
+                        <BYTEMAN_HOME/>
+                    </environmentVariables>
                 </configuration>
                 <executions>
                     <!-- run the integration tests -->
@@ -112,13 +146,14 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>4.1.0.Final</version>
                 <configuration>
-                    <!-- server -->
                     <skip>false</skip>
+                    <!-- server -->
                     <version>26.1.3.Final</version>
                     <!-- for server side debugging, replace <version/> with <jbossHome/> -->
                     <!--jbossHome>/home/nrla/jboss/wildfly-26.1.3.Final</jbossHome-->

@@ -1,10 +1,14 @@
 package org.wildfly.httpclient.interoperability.test;
 
+import org.jboss.byteman.contrib.bmunit.BMRule;
+import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.jboss.ejb.client.EJBClient;
 import org.jboss.ejb.client.StatelessEJBLocator;
 import org.jboss.ejb.client.URIAffinity;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.net.URI;
 
@@ -14,6 +18,8 @@ import java.net.URI;
  *
  * @author rachmato@redhat.com
  */
+@RunWith(BMUnitRunner.class)
+@BMUnitConfig(debug = true, bmunitVerbose = true)
 public class EEInteropCurrent2LegacyITCase {
     private static final String APP = "";
     private static final String MODULE = "sampleApp-ee8-1.0-SNAPSHOT";
@@ -21,6 +27,13 @@ public class EEInteropCurrent2LegacyITCase {
 
     private final String JBOSS_NODE_NAME = "legacy-server";
 
+    @BMRule(name = "Sanity check rule",
+            targetClass = "org.wildfly.httpclient.common.EENamespaceInteroperability",
+            targetMethod = "getHttpConnectionPoolFactory",
+            targetLocation = "ENTRY",
+            condition = "TRUE",
+            action = "traceln(\"EENamespaceInteroperability.getHttpConnectionPoolFactory() was called\")"
+    )
     @Test
     public void testCurrent2LegacyInteroperation() throws Exception {
         System.out.println("EEInteropCurrent2LegacyITCase:testCurrent2LegacyInteroperation (version 2.0.2.Final)");

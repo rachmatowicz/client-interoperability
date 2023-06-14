@@ -1,9 +1,13 @@
 package org.wildfly.httpclient.interoperability.test;
 
+import org.jboss.byteman.contrib.bmunit.BMRule;
+import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.jboss.ejb.client.EJBClient;
 import org.jboss.ejb.client.StatelessEJBLocator;
 import org.jboss.ejb.client.URIAffinity;
 import org.junit.Assert;
+import org.junit.runner.RunWith;
 import org.junit.Test;
 
 import java.net.URI;
@@ -14,6 +18,8 @@ import java.net.URI;
  *
  * @author rachmato@redhat.com
  */
+@RunWith(BMUnitRunner.class)
+@BMUnitConfig(debug = true, bmunitVerbose = true)
 public class EEInteropLegacy2CurrentITCase {
     private static final String APP = "";
     private static final String MODULE = "sampleApp-ee10-1.0-SNAPSHOT";
@@ -21,6 +27,13 @@ public class EEInteropLegacy2CurrentITCase {
 
     private final String JBOSS_NODE_NAME = "current-server";
 
+    @BMRule(name = "Sanity check rule",
+            targetClass = "org.wildfly.httpclient.common.HttpConnectionPool",
+            targetMethod = "getConnection",
+            targetLocation = "ENTRY",
+            condition = "TRUE",
+            action = "traceln(\"HttpConnectionPool.getConnection() was called\")"
+    )
     @Test
     public void testLegacy2CurrentInteroperation() throws Exception {
         System.out.println("EEInteropLegacy2CurrentITCase:testLegacy2CurrentInteroperation");
