@@ -1,0 +1,8 @@
+# current server Byteman rules
+RULE Sanity check rule
+CLASS org.wildfly.httpclient.ejb.HttpInvocationHandler
+METHOD handleInternal
+AT ENTRY
+IF TRUE
+DO traceln("HttpInvocationHandler.handleInternal() was called")
+ENDRULE

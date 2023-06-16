@@ -21,6 +21,11 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- NOTE: there is a Byteman agent on the clint side as well as the server side, so we use a non-default port here  -->
+        <byteman.agent>${project.basedir}/target/byteman.jar</byteman.agent>
+        <byteman.plugin>${project.basedir}/target/byteman-jboss-modules-plugin.jar</byteman.plugin>
+        <byteman.script>${project.basedir}/target/test-classes/byteman/current-server.btm</byteman.script>
+        <byteman.opts>script:${byteman.script},port:9092,sys:${byteman.plugin},modules:org.jboss.byteman.modules.jbossmodules.JBossModulesSystem,listener:true</byteman.opts>
     </properties>
 
     <dependencyManagement>
@@ -106,6 +111,39 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-byteman-agent</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.byteman</groupId>
+                                    <artifactId>byteman</artifactId>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.basedir}/target</outputDirectory>
+                                    <destFileName>byteman.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jboss.byteman</groupId>
+                                    <artifactId>byteman-jboss-modules-plugin</artifactId>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.basedir}/target</outputDirectory>
+                                    <destFileName>byteman-jboss-modules-plugin.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
@@ -155,7 +193,7 @@
                     <skip>false</skip>
                     <version>28.0.0.Final</version>
                     <!-- for server side debugging, replace <version/> with <jbossHome/> -->
-                    <!--jbossHome>/home/nrla/jboss/wildfly-28.0.0.Final</jbossHome-->
+                    <!--jbossHome>/home/nrla/jboss/wildfly-28.0.0.Final-debug</jbossHome-->
                     <propertiesFile>${project.basedir}/target/test-classes/system.properties</propertiesFile>
                     <provisioningDir>${project.basedir}/target/current-server</provisioningDir>
                     <!-- deployment -->
@@ -171,6 +209,8 @@
                             </user>
                         </users>
                     </add-user>
+                    <!-- configure the Byteman agent on this server -->
+                    <javaOpts>-Djboss.modules.system.pkgs=org.jboss.byteman -javaagent:${byteman.agent}=${byteman.opts}</javaOpts>
                 </configuration>
                 <executions>
                     <execution>
