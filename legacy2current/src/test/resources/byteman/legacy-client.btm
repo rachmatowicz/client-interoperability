@@ -1,0 +1,9 @@
+# legacy client Byteman rules
+
+RULE Sanity check rule
+CLASS org.wildfly.httpclient.common.HttpConnectionPool
+METHOD getConnection
+AT ENTRY
+IF TRUE
+DO traceln("HttpConnectionPool.getConnection() was called")
+ENDRULE

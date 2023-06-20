@@ -1,6 +1,6 @@
 package org.wildfly.httpclient.interoperability.test;
 
-import org.jboss.byteman.contrib.bmunit.BMRule;
+import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
 import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.jboss.ejb.client.EJBClient;
@@ -27,14 +27,8 @@ public class EEInteropCurrent2LegacyITCase {
 
     private final String JBOSS_NODE_NAME = "legacy-server";
 
-    @BMRule(name = "Sanity check rule",
-            targetClass = "org.wildfly.httpclient.common.EENamespaceInteroperability",
-            targetMethod = "getHttpConnectionPoolFactory",
-            targetLocation = "ENTRY",
-            condition = "TRUE",
-            action = "traceln(\"EENamespaceInteroperability.getHttpConnectionPoolFactory() was called\")"
-    )
     @Test
+    @BMScript(value="current-client.btm", dir="target/test-classes/byteman")
     public void testCurrent2LegacyInteroperation() throws Exception {
         System.out.println("EEInteropCurrent2LegacyITCase:testCurrent2LegacyInteroperation (version 2.0.2.Final)");
 

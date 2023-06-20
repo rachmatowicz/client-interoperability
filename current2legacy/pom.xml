@@ -232,6 +232,28 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.jboss.byteman</groupId>
+                <artifactId>byteman-rulecheck-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>current2legacy Byteman rule check</id>
+                        <goals>
+                            <goal>rulecheck</goal>
+                        </goals>
+                        <configuration>
+                            <packages>
+                                <package>org.wildfly.httpclient.common</package>
+                            </packages>
+                            <includes>
+                                <include>**/*.btm</include>
+                            </includes>
+                            <verbose>true</verbose>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

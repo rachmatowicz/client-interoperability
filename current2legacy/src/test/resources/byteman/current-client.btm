@@ -1,0 +1,9 @@
+# current client Byteman rules
+
+RULE Sanity check rule
+CLASS EENamespaceInteroperability
+METHOD getHttpConnectionPoolFactory
+AT ENTRY
+IF TRUE
+DO traceln("EENamespaceInteroperability.getHttpConnectionPoolFactory() was called")
+ENDRULE

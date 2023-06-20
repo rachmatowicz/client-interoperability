@@ -62,6 +62,11 @@
                 <artifactId>byteman-jboss-modules-plugin</artifactId>
                 <version>${version.org.jboss.byteman.modules}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.byteman</groupId>
+                <artifactId>byteman-rulecheck-maven-plugin</artifactId>
+                <version>${version.org.jboss.byteman}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
