@@ -1,0 +1,25 @@
+# current client Byteman rules
+
+RULE Sanity check rule
+CLASS org.wildfly.httpclient.common.HttpConnectionPool
+METHOD getConnection
+AT ENTRY
+IF TRUE
+DO traceln("HttpConnectionPool.getConnection() was called")
+ENDRULE
+
+# This rule validates the protocol version on the client side upon handshake completion.
+# This only happens on the first invocation that the client makes with the server; after the first
+# invocation, the client uses the same protocol version for all subsequent invocations.
+# The handshake protocol version is set when the client writes to the variable protocolVersion
+# in the method completed() of the response handler EEInteroperableClientExchange.
+#
+RULE Verify current2current: client-side
+CLASS EENamespaceInteroperability$HttpConnectionPool$ClientConnectionHolder$EEInteroperableClientExchange$1
+METHOD completed
+AFTER WRITE org.wildfly.httpclient.common.EENamespaceInteroperability$HttpConnectionPool.protocolVersion ALL
+BIND pv:int = $this.this$2.this$1.this$0.getProtocolVersion(); isVersionTwo:boolean = pv == 2
+IF !isVersionTwo
+DO traceln("Interoperability handshake failed: incorrect protocol version (version = " + pv + ")");
+   throw new RuntimeException("Interoperability handshake failure")
+ENDRULE

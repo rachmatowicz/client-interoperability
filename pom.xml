@@ -13,6 +13,7 @@
         <module>current2legacy</module>
         <module>sampleApp-ee8</module>
         <module>sampleApp-ee10</module>
+        <module>current2current</module>
     </modules>
 
     <properties>

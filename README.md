@@ -11,6 +11,7 @@ It contains the following maven modules:
 * sampleApp-ee10 - a module containing a sample EE10 EJB application to be deployed on the current server
 * legacy2Current - a module which starts a current Wildfly server and runs legacy EJB client tests against it
 * current2Legacy - a module which starts a legacy Wildfly server and runs current EJB client tests against it
+* current2current - a module which starts a current Wildfly server and runs current EJB client tests against it
 
 where:
 * legacy => Wildfly 26.1.3 (Wildfly HTTP client 1.1.12.Final, penultimate release without the interoperability handshake)
@@ -29,6 +30,8 @@ The tests should cover the following scenarios where the handshake protocol is u
 * EJB client using http protocol
 * Naming client using remote/remote+http protocol
 * Naming client using http protocol
+
+NOTE: the tests only currently cover the EJB client using http protocol.
 
 ## Byteman instrumentation
 
