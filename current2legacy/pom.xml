@@ -171,7 +171,7 @@
                 <executions>
                     <!-- run the integration tests -->
                     <execution>
-                        <id>ee-interop-tests</id>
+                        <id>ee-interop-tests-current2legacy</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -179,6 +179,22 @@
                         <configuration>
                             <systemProperties>
                                 <org.wildfly.ee.namespace.interop>true</org.wildfly.ee.namespace.interop>
+                                <org.wildfly.httpclient.eagerly-acquire-session>false</org.wildfly.httpclient.eagerly-acquire-session>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <!-- run the integration tests (eagerly-acquire-affinity=true) -->
+                    <execution>
+                        <id>ee-interop-tests-current2legacy-eagerly-acquire-affinity</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports-eager-affinity</reportsDirectory>
+                            <systemProperties>
+                                <org.wildfly.ee.namespace.interop>true</org.wildfly.ee.namespace.interop>
+                                <org.wildfly.httpclient.eagerly-acquire-session>true</org.wildfly.httpclient.eagerly-acquire-session>
                             </systemProperties>
                         </configuration>
                     </execution>

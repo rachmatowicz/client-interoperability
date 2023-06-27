@@ -13,7 +13,7 @@
 <configuration >
     <http-client xmlns="urn:wildfly-http-client:1.0">
         <defaults>
-            <eagerly-acquire-session value="false"/>
+            <eagerly-acquire-session value="${org.wildfly.httpclient.eagerly-acquire-session:false}"/>
             <enable-http2 value="true" />
         </defaults>
     </http-client>
