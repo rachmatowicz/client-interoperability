@@ -19,7 +19,7 @@ import java.net.URI;
  * @author rachmato@redhat.com
  */
 @RunWith(BMUnitRunner.class)
-@BMUnitConfig(debug = true, bmunitVerbose = true)
+@BMUnitConfig(debug = true, verbose = true, bmunitVerbose = true)
 public class EEInteropCurrent2LegacyITCase {
     private static final String APP = "";
     private static final String MODULE = "sampleApp-ee8-1.0-SNAPSHOT";

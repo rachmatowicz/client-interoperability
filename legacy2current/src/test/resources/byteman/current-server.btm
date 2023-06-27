@@ -6,3 +6,14 @@ AT ENTRY
 IF TRUE
 DO traceln("HttpInvocationHandler.handleInternal() was called")
 ENDRULE
+
+# This rule validates the protocol version on the server side.
+# The JakartaNamespaceHandler should never be called with a legacy client.
+RULE Verify legacy2current: server-side
+CLASS org.wildfly.httpclient.common.EENamespaceInteroperability$JakartaNamespaceHandler
+METHOD handleRequest
+AT ENTRY
+IF TRUE
+DO traceln("Interoperability handshake failed: incorrect v2 handler called");
+  throw new RuntimeException("Interoperability handshake failure")
+ENDRULE

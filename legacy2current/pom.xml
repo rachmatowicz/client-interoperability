@@ -231,6 +231,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- rulecheck does not work on the server side!
             <plugin>
                 <groupId>org.jboss.byteman</groupId>
                 <artifactId>byteman-rulecheck-maven-plugin</artifactId>
@@ -252,6 +253,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 
